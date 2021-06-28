@@ -1,11 +1,13 @@
 import tkinter as tk
 from tkinter import filedialog
 import os
+from PIL import Image
+from PIL.ExifTags import TAGS
 
 root = tk.Tk() # Initializes Tkinter window for file selection.
 root.withdraw() # Hides window until get_file_path function is called.
 
-IMAGE_TYPES = ['png', 'jpg', 'tiff', 'gif', 'mp4', 'heic', 'jpeg', 'avi']
+IMAGE_TYPES = ['png', 'jpg', 'tiff','jpeg']
 
 
 def get_file_path():
@@ -47,8 +49,24 @@ def main():
     """Main."""
     from_path = get_file_path()
     file_list = get_image_list(from_path)
+    for image in file_list:
+        print(f"\n{from_path}/{image}")
+        print_data(f"{from_path}/{image}")
     to_path = get_photo_location_path()
-    print(file_list)
+
+
+def print_data(file):
+    """For Testing. Prints photo name & date."""
+    image = Image.open(file)
+    exifdata = image.getexif()
+    for tag_id in exifdata:
+        # get the tag name, instead of human unreadable tag id
+        tag = TAGS.get(tag_id, tag_id)
+        data = exifdata.get(tag_id)
+        # decode bytes
+        if isinstance(data, bytes):
+            data = data.decode()
+        print(f"{tag:25}: {data}")
 
 
 main()
