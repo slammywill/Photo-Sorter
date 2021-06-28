@@ -56,7 +56,7 @@ def main():
 
 
 def print_data(file):
-    """For Testing. Prints photo name & date."""
+    """For Testing. Prints photo name & metadata."""
     image = Image.open(file)
     exifdata = image.getexif()
     for tag_id in exifdata:
