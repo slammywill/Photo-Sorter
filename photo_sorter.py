@@ -27,7 +27,6 @@ def check_if_image(image):
     image, else returns None."""
     name_reversed = image[::-1] # Reverses the name to find full stop easier.
     index = 0
-
     for i in range(len(name_reversed)): # Finds the index of the full stop.
         if name_reversed[i] == ".":
             index = i
@@ -45,16 +44,6 @@ def get_image_list(file_path):
     return images
 
 
-def main():
-    """Main."""
-    from_path = get_file_path()
-    file_list = get_image_list(from_path)
-    for image in file_list:
-        print(f"\n{from_path}/{image}")
-        print_data(f"{from_path}/{image}")
-    to_path = get_photo_location_path()
-
-
 def print_data(file):
     """For Testing. Prints photo name & metadata."""
     image = Image.open(file)
@@ -67,6 +56,28 @@ def print_data(file):
         if isinstance(data, bytes):
             data = data.decode()
         print(f"{tag:25}: {data}")
+
+
+def sort_name(image_list):
+    """Sorts the image list by the name.
+
+    Args:
+        image_list ([type]): [description]
+    """
+    sorted_list = sorted(image_list)
+    return sorted_list
+
+
+def main():
+    """Main."""
+    from_path = get_file_path()
+    image_list = get_image_list(from_path)
+    print(image_list)
+    # for image in image_list:
+    #     print(f"{from_path}/{image}")
+    #     print_data(f"{from_path}/{image}")
+    to_path = get_photo_location_path()
+    print(sort_name(image_list))
 
 
 main()
