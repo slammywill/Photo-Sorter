@@ -44,25 +44,36 @@ def get_image_list(file_path):
     return images
 
 
-def print_data(file):
-    """For Testing. Prints photo name & metadata."""
-    image = Image.open(file)
+def get_image_data(image):
+    """Takes an image file and returns a dict of all of the metadata tags and their values.
+
+    Args:
+        image (string): The path to the image.
+    """
+    image = Image.open(image)
     exifdata = image.getexif()
+    exif_data_dict = dict()
     for tag_id in exifdata:
-        # get the tag name, instead of human unreadable tag id
-        tag = TAGS.get(tag_id, tag_id)
-        data = exifdata.get(tag_id)
-        # decode bytes
-        if isinstance(data, bytes):
-            data = data.decode()
-        print(f"{tag:25}: {data}")
+        key, value = TAGS.get(tag_id, tag_id), exifdata.get(tag_id)
+        if isinstance(value, bytes):
+            value = value.decode()
+        exif_data_dict[key] = value
+    return exif_data_dict
+
+
+def sort_date(image_date):
+    """Sorts the image by the date it was taken.
+    Args:
+        image_date (string): The date the image was taken.
+    """
+
 
 
 def sort_name(image_list):
     """Sorts the image list by the name.
 
     Args:
-        image_list ([type]): [description]
+        image_list (list): The unsorted list of images.
     """
     sorted_list = sorted(image_list)
     return sorted_list
@@ -73,9 +84,9 @@ def main():
     from_path = get_file_path()
     image_list = get_image_list(from_path)
     print(image_list)
-    # for image in image_list:
-    #     print(f"{from_path}/{image}")
-    #     print_data(f"{from_path}/{image}")
+    for image in image_list:
+        data = get_image_data(f"{from_path}/{image}")
+        print(data)
     to_path = get_photo_location_path()
     print(sort_name(image_list))
 
