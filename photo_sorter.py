@@ -24,8 +24,11 @@ WINDOW = window.Window(*WINDOW_SIZE, TITLE)
 resource.path = ["resources"]
 resource.reindex()
 
-
-IMAGE_TYPES = ['png', 'jpg', 'tiff','jpeg']
+# Constant declaration.
+IMAGE_TYPES   = ['png', 'jpg', 'tiff','jpeg']
+SEL_BTN_1_POS = (WINDOW_SIZE[0] // 2, 283)
+SEL_BTN_2_POS = (WINDOW_SIZE[0] // 2, 133)
+GO_BTN_POS    = (85, 38)
 
 
 def get_file_path():
@@ -102,10 +105,47 @@ def sort_name(image_list):
 
 
 def draw():
-    batch = graphics.Batch() # Groups all images / shapes to draw at once.
-    background = sprite.Sprite(img=resource.image("background.png"), x=0, y=0, batch=batch)
-    batch.draw()
+    """Initialises the background and the buttons to draw to the window every frame.
+    """
+    background = sprite.Sprite(img=resource.image("background.png"), x=0, y=0)
+    background.draw()
 
+
+def center_image(image):
+    """Centers the anchor points of an image.
+
+    Args:
+        image (image): The image object.
+    """
+    image.anchor_x = image.width // 2
+    image.anchor_y = image.height // 2
+
+
+def check_button_click(b_x, b_y, m_x, m_y):
+    """Checks whether a button was pressed on click.
+
+    Args:
+        b_x (int): x-position of button.
+        b_y (int): y-position of button.
+        m_x (int): x-position of mouse.
+        m_y (int): y-position of mouse.
+    """
+    if b_x - 72 < m_x < b_x + 72:
+        if b_y - 22 < m_y < b_y + 22:
+            return True
+    return False
+
+
+@WINDOW.event
+def on_mouse_press(x, y, button, modifiers):
+    """Called when mouse clicks.
+    """
+    if check_button_click(*SEL_BTN_1_POS, x, y):
+        print("Select button 1 clicked!!")
+    elif check_button_click(*SEL_BTN_2_POS, x, y):
+        print("Select button 2 clicked!")
+    elif check_button_click(*GO_BTN_POS, x, y):
+        print("Go button clicked!")
 
 
 @WINDOW.event
