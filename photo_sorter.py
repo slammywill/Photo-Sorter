@@ -30,6 +30,10 @@ SEL_BTN_1_POS = (WINDOW_SIZE[0] // 2, 283)
 SEL_BTN_2_POS = (WINDOW_SIZE[0] // 2, 133)
 GO_BTN_POS    = (85, 38)
 
+# Global variable declaration.
+path_to_photos   = ''
+path_to_location = ''
+
 
 def get_file_path():
     """Returns file path of images from user input."""
@@ -93,7 +97,6 @@ def sort_date(image_date):
     """
 
 
-
 def sort_name(image_list):
     """Sorts the image list by the name.
 
@@ -109,16 +112,6 @@ def draw():
     """
     background = sprite.Sprite(img=resource.image("background.png"), x=0, y=0)
     background.draw()
-
-
-def center_image(image):
-    """Centers the anchor points of an image.
-
-    Args:
-        image (image): The image object.
-    """
-    image.anchor_x = image.width // 2
-    image.anchor_y = image.height // 2
 
 
 def check_button_click(b_x, b_y, m_x, m_y):
@@ -141,7 +134,9 @@ def on_mouse_press(x, y, button, modifiers):
     """Called when mouse clicks.
     """
     if check_button_click(*SEL_BTN_1_POS, x, y):
-        print("Select button 1 clicked!!")
+        print("Select button 1 clicked!")
+        path_to_photos = get_file_path()
+        path_to_location = get_photo_location_path()
     elif check_button_click(*SEL_BTN_2_POS, x, y):
         print("Select button 2 clicked!")
     elif check_button_click(*GO_BTN_POS, x, y):
