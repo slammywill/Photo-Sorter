@@ -182,6 +182,8 @@ def on_mouse_press(x, y, button, modifiers):
     global allow_sort_click, show_selection_box, old_path, new_path, image_list, sorting_type
     if allow_sort_click:
         sorting_type = get_sort_type_from_selection(x, y)
+        if sorting_type == None:
+            sorting_type = ""
         allow_sort_click = False
         show_selection_box = False
         if sorting_type == 'name':
