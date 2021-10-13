@@ -12,7 +12,6 @@ from PIL import Image
 from PIL.ExifTags import TAGS
 from pyglet import *
 
-
 root = tk.Tk() # Initializes Tkinter window for file selection.
 root.withdraw() # Hides window until get_file_path function is called.
 
@@ -30,21 +29,28 @@ SEL_BTN_1_POS = (WINDOW_SIZE[0] // 2, 283)
 SEL_BTN_2_POS = (WINDOW_SIZE[0] // 2, 133)
 GO_BTN_POS    = (85, 38)
 
-# Global variable declaration.
-path_to_photos   = ''
-path_to_location = ''
+old_path = "/"
+new_path = "/"
+image_list = []
+sorting_type = ""
+show_selection_box = False
+allow_sort_click = False
 
 
 def get_file_path():
-    """Returns file path of images from user input."""
-    file_path = filedialog.askdirectory()
-    return file_path
+    """Sets the old file path of images from user input."""
+    return filedialog.askdirectory()
 
 
 def get_photo_location_path():
-    """Returns file path of images from user input."""
-    location_path = filedialog.askdirectory()
-    return location_path
+    """Sets the new file path of images from user input."""
+    return filedialog.askdirectory()
+
+
+def get_sorting_type():
+    """Creates a window to ask the user which sorting algorithm they want to use."""
+    global show_selection_box
+    show_selection_box = True
 
 
 def check_if_image(image):
@@ -90,14 +96,30 @@ def get_image_data(image):
     return exif_data_dict
 
 
-def sort_date(image_date):
+def sort_date_taken():
     """Sorts the image by the date it was taken.
     Args:
         image_date (string): The date the image was taken.
     """
+    image_data = dict()
+    for image in image_list:
+        image_data[image] = get_image_data(f"{old_path}/{image}")
+    new_list = sorted(image_data.items(), key=get_date)
+    sorted_list = list()
+    for i in new_list:
+        sorted_list.append(i[0])
+    return new_list
 
 
-def sort_name(image_list):
+def get_date(image):
+    """Returns the date an image was taken, 0 if not provided."""
+    if "DateTime" not in image[1]:
+        image[1]["DateTime"] = "999999999" # Moves image to end of list if no DateTime given.
+    return image[1]["DateTime"]
+
+
+
+def sort_name():
     """Sorts the image list by the name.
 
     Args:
@@ -110,8 +132,23 @@ def sort_name(image_list):
 def draw():
     """Initialises the background and the buttons to draw to the window every frame.
     """
-    background = sprite.Sprite(img=resource.image("background.png"), x=0, y=0)
-    background.draw()
+    background_image = resource.image("background.png")
+    background_image.width, background_image.height = WINDOW_SIZE[0], WINDOW_SIZE[1]
+    background_image.blit(x=0, y=0, z=-1)
+
+    selection_box = resource.image("selection_box.png")
+    selection_box.width, selection_box.height = 187, 77
+    if show_selection_box:
+        selection_box.blit(x=115, y=90, z=1)
+
+    from_path_label    = text.Label(f"{new_path[:37]}", font_name="Menlo", font_size=10, x=75, y=349, color=(150,150,150,255))
+    to_path_label      = text.Label(f"{old_path[:37]}", font_name="Menlo", font_size=10, x=75, y=322, color=(150,150,150,255))
+    sorting_type_label = text.Label(f"{sorting_type.capitalize()}",  font_name="Menlo", font_size=10, x=75, y=173, color=(150,150,150,255))
+
+    to_path_label.draw()
+    from_path_label.draw()
+    sorting_type_label.draw()
+
 
 
 def check_button_click(b_x, b_y, m_x, m_y):
@@ -129,18 +166,45 @@ def check_button_click(b_x, b_y, m_x, m_y):
     return False
 
 
+def get_sort_type_from_selection(m_x, m_y):
+    """Returns which sorting algorithm was selected."""
+    if  280 > m_x > 115:
+        if 170 > m_y > 125:
+            return 'name'
+        elif 125 > m_y > 95:
+            return 'date taken'
+    return None
+
 @WINDOW.event
 def on_mouse_press(x, y, button, modifiers):
     """Called when mouse clicks.
     """
-    if check_button_click(*SEL_BTN_1_POS, x, y):
-        print("Select button 1 clicked!")
-        path_to_photos = get_file_path()
-        path_to_location = get_photo_location_path()
+    global allow_sort_click, show_selection_box, old_path, new_path, image_list, sorting_type
+    if allow_sort_click:
+        sorting_type = get_sort_type_from_selection(x, y)
+        allow_sort_click = False
+        show_selection_box = False
+        if sorting_type == 'name':
+            image_list = sort_name(image_list)
+        elif sorting_type == 'date taken':
+            image_list = sort_date_taken(image_list)
+    elif check_button_click(*SEL_BTN_1_POS, x, y):
+        old_path = get_file_path()
+        new_path = get_photo_location_path()
+        image_list = get_image_list(old_path)
     elif check_button_click(*SEL_BTN_2_POS, x, y):
-        print("Select button 2 clicked!")
+        get_sorting_type()
+        allow_sort_click = True
+        # image_list = sort_date_taken()
     elif check_button_click(*GO_BTN_POS, x, y):
-        print("Go button clicked!")
+        move_images(old_path, new_path, image_list)
+
+
+def move_images(path_from, path_to, images):
+    """Moves the images from their current location to the new location specified
+    by the user."""
+    for image in images:
+        os.replace(f"{path_from}/{image}", f"{path_to}/{image}")
 
 
 @WINDOW.event
@@ -153,18 +217,7 @@ def on_draw():
 
 def main():
     """Main."""
-    app.run() # Run pyglet window.
-    # from_path = get_file_path()
-    # image_list = get_image_list(from_path)
-    # print(image_list)
-    # for image in image_list:
-    #     data = get_image_data(f"{from_path}/{image}")
-    #     print(data)
-    # to_path = get_photo_location_path()
-    # print(sort_name(image_list))
+    app.run()
 
 
 main()
-
-
-# TODO: Add error exception for file path.
