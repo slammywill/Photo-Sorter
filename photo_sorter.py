@@ -187,9 +187,9 @@ def on_mouse_press(x, y, button, modifiers):
         allow_sort_click = False
         show_selection_box = False
         if sorting_type == 'name':
-            image_list = sort_name(image_list)
+            image_list = sort_name()
         elif sorting_type == 'date taken':
-            image_list = sort_date_taken(image_list)
+            image_list = sort_date_taken()
     elif check_button_click(*SEL_BTN_1_POS, x, y):
         old_path = get_file_path()
         new_path = get_photo_location_path()
@@ -197,7 +197,6 @@ def on_mouse_press(x, y, button, modifiers):
     elif check_button_click(*SEL_BTN_2_POS, x, y):
         get_sorting_type()
         allow_sort_click = True
-        # image_list = sort_date_taken()
     elif check_button_click(*GO_BTN_POS, x, y):
         move_images(old_path, new_path, image_list)
 
