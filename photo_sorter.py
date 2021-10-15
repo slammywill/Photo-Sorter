@@ -8,6 +8,7 @@ Author: Sam Willems
 import tkinter as tk
 from tkinter import filedialog
 import os
+import shutil
 from PIL import Image
 from PIL.ExifTags import TAGS
 from pyglet import *
@@ -141,8 +142,8 @@ def draw():
     if show_selection_box:
         selection_box.blit(x=115, y=90, z=1)
 
-    from_path_label    = text.Label(f"{new_path[:37]}", font_name="Menlo", font_size=10, x=75, y=349, color=(150,150,150,255))
-    to_path_label      = text.Label(f"{old_path[:37]}", font_name="Menlo", font_size=10, x=75, y=322, color=(150,150,150,255))
+    from_path_label    = text.Label(f"{old_path[:37]}", font_name="Menlo", font_size=10, x=75, y=349, color=(150,150,150,255))
+    to_path_label      = text.Label(f"{new_path[:37]}", font_name="Menlo", font_size=10, x=75, y=322, color=(150,150,150,255))
     sorting_type_label = text.Label(f"{sorting_type.capitalize()}",  font_name="Menlo", font_size=10, x=75, y=173, color=(150,150,150,255))
 
     to_path_label.draw()
@@ -205,7 +206,9 @@ def move_images(path_from, path_to, images):
     """Moves the images from their current location to the new location specified
     by the user."""
     for image in images:
-        os.replace(f"{path_from}/{image}", f"{path_to}/{image}")
+        print(image)
+        shutil.copy(f"{path_from}/{image[0]}", f"{path_to}/{image[0]}")
+        os.remove(f"{path_from}/{image[0]}")
 
 
 @WINDOW.event
