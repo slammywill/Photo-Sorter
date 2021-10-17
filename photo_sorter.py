@@ -30,6 +30,7 @@ SEL_BTN_1_POS = (WINDOW_SIZE[0] // 2, 283)
 SEL_BTN_2_POS = (WINDOW_SIZE[0] // 2, 133)
 GO_BTN_POS    = (85, 38)
 
+# Global variables.
 old_path = "/"
 new_path = "/"
 image_list = []
@@ -186,12 +187,13 @@ def get_sort_type_from_selection(m_x, m_y):
     return None
 
 @WINDOW.event
-def on_mouse_press(x, y):
+def on_mouse_press(x, y, b, m):
     """Called when mouse clicks.
 
     Args:
         x (int): x-position of the mouse.
         y (int): y-position of the mouse.
+        b & m: Not used, required for mouse press module function.
     """
     global allow_sort_click, show_selection_box, old_path, new_path, image_list, sorting_type
     if allow_sort_click:
