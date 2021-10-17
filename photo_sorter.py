@@ -1,6 +1,6 @@
 """Sorting ++ Aplication.
 
-Sorts photos based on their metadata.
+Sorts photos based on their EXIF metadata.
 
 Author: Sam Willems
 """
@@ -113,7 +113,11 @@ def sort_date_taken():
 
 
 def get_date(image):
-    """Returns the date an image was taken, 0 if not provided."""
+    """Returns the date an image was taken, 0 if not provided.
+
+    Args:
+        image (tuple): The image tuple containing its name and metadata.
+        """
     if "DateTime" not in image[1]:
         image[1]["DateTime"] = "999999999" # Moves image to end of list if no DateTime given.
     return image[1]["DateTime"]
@@ -168,7 +172,12 @@ def check_button_click(b_x, b_y, m_x, m_y):
 
 
 def get_sort_type_from_selection(m_x, m_y):
-    """Returns which sorting algorithm was selected."""
+    """Returns which sorting algorithm was selected.
+
+    Args:
+        m_x (int): x-position of the mouse.
+        m_y (int): y-position of the mouse.
+        """
     if  280 > m_x > 115:
         if 170 > m_y > 125:
             return 'name'
@@ -177,8 +186,12 @@ def get_sort_type_from_selection(m_x, m_y):
     return None
 
 @WINDOW.event
-def on_mouse_press(x, y, button, modifiers):
+def on_mouse_press(x, y):
     """Called when mouse clicks.
+
+    Args:
+        x (int): x-position of the mouse.
+        y (int): y-position of the mouse.
     """
     global allow_sort_click, show_selection_box, old_path, new_path, image_list, sorting_type
     if allow_sort_click:
@@ -204,9 +217,14 @@ def on_mouse_press(x, y, button, modifiers):
 
 def move_images(path_from, path_to, images):
     """Moves the images from their current location to the new location specified
-    by the user."""
+    by the user.
+
+    Args:
+        path_from (string): file path that the images are coming from.
+        path_to (string): file path that the images are going to.
+        images (list): The list of all images."""
+
     for image in images:
-        print(image)
         shutil.copy(f"{path_from}/{image[0]}", f"{path_to}/{image[0]}")
         os.remove(f"{path_from}/{image[0]}")
 
