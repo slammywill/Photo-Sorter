@@ -11,7 +11,7 @@
     Pillow:  https://pypi.org/project/Pillow/
     pyglet:  http://pyglet.org/
 
-    Any modules not installed should be able to be install via terminal with *pip install 'module'*.
+    Any modules not installed should be able to be install via terminal with *"pip install module"*. (where module is the name of the module).
 
 ### AUTHOR
     Sam Willems
