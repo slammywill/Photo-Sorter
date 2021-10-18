@@ -227,8 +227,12 @@ def move_images(path_from, path_to, images):
         images (list): The list of all images."""
 
     for image in images:
-        shutil.copy(f"{path_from}/{image[0]}", f"{path_to}/{image[0]}")
-        os.remove(f"{path_from}/{image[0]}")
+        if sorting_type == 'name':
+            shutil.copy(f"{path_from}/{image}", f"{path_to}/{image}")
+            os.remove(f"{path_from}/{image}")
+        elif sorting_type == 'date taken':
+            shutil.copy(f"{path_from}/{image[0]}", f"{path_to}/{image[0]}")
+            os.remove(f"{path_from}/{image[0]}")
 
 
 @WINDOW.event
