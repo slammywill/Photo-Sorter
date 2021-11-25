@@ -110,7 +110,7 @@ def sort_date_taken():
     sorted_list = list()
     for i in new_list:
         sorted_list.append(i[0])
-    return new_list
+    return sorted_list
 
 
 def get_date(image):
